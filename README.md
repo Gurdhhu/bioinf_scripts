@@ -43,6 +43,6 @@ You can also download an executable for Linux that does not require any dependen
 * The script writes some temporary files that are normally removed at the end. If the script is terminated manually, some files can stay unremoved.
 
 ### Contacts
-For any questions and suggestions: ledum_laconicum(at)mail.ru
+For any questions and suggestions: ledum_laconicum(at)mail(dot)ru
 
 If anybody will require additional annotation features (e.g., genes) or additional databases to be available (e.g., blastp), don't hesitate to contact me.
