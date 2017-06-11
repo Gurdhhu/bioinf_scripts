@@ -24,7 +24,9 @@ I did not try to run it on Windows, but probably it should also work.
 
 You can also download an executable for Linux that does not require any dependencies. The script with all dependencies was bundled into one file with [PyInstaller](http://www.pyinstaller.org/), so you can just save **"annotate_blast_hits"** and run it.
 
+After downloading the script you should first make it executable:
 
+<code>chmod +x annotate_blast_hits.py</code>
 
 **Usage:**  <code>annotate_blast_hits.py [-h] csv email</code>
 
