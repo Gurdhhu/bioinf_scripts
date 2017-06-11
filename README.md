@@ -1,5 +1,5 @@
-# Public scripts
-Here I will upload some python3 scripts that I wrote initially for myself but then they appeared to be useful for other people working with nucleotide sequences.
+# Bioinformatic scripts
+Here I will upload some python3 scripts for dealing with nucleotide sequences that I wrote initially for myself but then they appeared to be useful for other people.
 ## 1. annotate_blast_hits
 ### Motivation
 
@@ -8,7 +8,7 @@ It is not convenient to check all the matches manually, especially if you querie
 
 ### Description
 
-This script is intended for taxonomic annotation of blastn results saved in Hit Table CSV format where GenBank accession numbers are in the 4th column.
+This script is intended for taxonomic annotation of **blastn** results saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide** database.
 The output is an annotated CSV file "*_annotated.csv" with the following columns added:
 
 * Record name
@@ -40,9 +40,11 @@ You can also download an executable for Linux that does not require any dependen
 ### Possible problems
 * If any of GenBank accessions correspond to extremely large sequences, such as whole-genome bacterial sequences or complete chromosome sequences with a length of millions bp, it will run EXTREMELY slowly.
 
-* The script writes some temporary files that are normally removed at the end. If the script is terminated manually, some files can stay unremoved.
+* It was tested with hit tables with up to several thousand accessions. It usually works, but if it's a daytime in USA and NCBI servers are overloaded, the script can stop with a runtime error.
+
+* The script writes some temporary files in the folder containing the hit table and they are normally removed at the end. If the script is terminated manually, some files can stay unremoved.
 
 ### Contacts
 For any questions and suggestions: ledum_laconicum(at)mail(dot)ru
 
-If anybody will require additional annotation features (e.g., genes) or additional databases to be available (e.g., blastp), don't hesitate to contact me.
+If anybody will require additional annotation features (e.g., genes) or additional databases to be available (e.g., protein), don't hesitate to contact me.
