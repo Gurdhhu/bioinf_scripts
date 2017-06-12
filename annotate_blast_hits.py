@@ -81,8 +81,8 @@ try:
                               ", ".join(i["GBSeq_references"][0]["GBReference_authors"]) + " " +
                                i["GBSeq_references"][0]["GBReference_title"],
                                "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
+    for tmp in filelist:
         remove(tmp)  # removing temporary file
-        filelist.remove(tmp)
 
 except Exception as err:  # removing all temporary files in case of any error
     for i in filelist:
