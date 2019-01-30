@@ -3,12 +3,12 @@ Here I will upload some python3 scripts for dealing with nucleotide sequences th
 ## 1. annotate_blast_hits
 ### Motivation
 
-When you download the results of blastn search from NCBI BLAST webpage, the table of blast hits does not contain any information about the matching sequences except their accession number.
+When you download the results of blast search from NCBI BLAST webpage, the table of blast hits does not contain any information about the matching sequences except their accession number.
 It is not convenient to check all the matches manually, especially if you queried hundreds of sequences in a batch.
 
 ### Description
 
-This script is intended for taxonomic annotation of **blastn** results saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide** database.
+This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide** or **Protein** databases.
 The output is an annotated CSV file "*_annotated.csv" with the following columns added:
 
 * Record name
@@ -28,14 +28,15 @@ After downloading the script you should first make it executable:
 
 <code>chmod +x annotate_blast_hits.py</code>
 
-**Usage:**  <code>annotate_blast_hits.py [-h] csv email</code>
+**Usage:**  <code>annotate_blast_hits.py [-h] csv db email</code>
 
-**Example usage:** <code>./annotate_blast_hits.py Documents/AlignmentHitTable.csv yourname@mail.com</code>
+**Example usage:** <code>./annotate_blast_hits.py example_input.csv n yourname@mail.com</code>
 
 | arguments | description |
 | --- | --- |
 | csv | Pathway to csv-formatted Hit Table file with blastn results. Positional argument |
-| email | Your e-mail address. Positional argument. It is important when you make many requests to NCBI databases because it helps NCBI to contact you if something goes wrong. Otherwise they can just silently block you |
+| db | For the output of **nucleotide blast** or **tblastn**, use <code>n</code>. For the output of **protein blast** or **blastx**, use <code>p</code>. Positional argument |
+| email | Your e-mail address. It is important when you make many requests to NCBI databases because it helps NCBI to contact you if something goes wrong. Otherwise they can just silently block you. Positional argument |
 | -h, --help | show help message and exit. Optional argument |
 
 
@@ -49,4 +50,4 @@ After downloading the script you should first make it executable:
 ### Contacts
 For any questions and suggestions: ledum_laconicum(at)mail(dot)ru
 
-If anybody will require additional annotation features (e.g., genes) or additional databases to be available (e.g., protein), don't hesitate to contact me.
+If anybody will require additional annotation features (e.g., genes), don't hesitate to contact me.
