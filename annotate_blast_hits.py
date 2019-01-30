@@ -6,18 +6,21 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter,
                         description='''
-This script is intended for annotation of blastn results saved in Hit Table CSV format where GenBank accession numbers are in the 4th column.
+This script is intended for annotation of blast results saved in Hit Table CSV format.
 The output is an annotated CSV file "*_annotated.csv" with the following columns added:
 
 Record name, Species, Date of update, Reference, Full taxonomy
 
-Example usage: ./annotate_blast_hits.py Documents/AlignmentHitTable.csv yourname@mail.com
-
-https://github.com/Gurdhhu/public_scripts
-                                    ''')
+https://github.com/Gurdhhu/bioinf_scripts
+                                    ''',
+                        epilog='Example usage: ./annotate_blast_hits.py example_input.csv n yourname@mail.com')
 parser.add_argument("csv",
                     type=str,
-                    help="Pathway to csv-formatted Hit Table file with blastn results")
+                    help="Pathway to csv-formatted Hit Table file with blast results")
+parser.add_argument("db",
+                    choices=['n', 'p'],
+                    help="For the output of nucleotide blast or tblastn, use \'n\'. "
+                         "For the output of protein blast or blastx, use \'p\'.")
 parser.add_argument("email",
                     type=str,
                     help="Your e-mail address. It is important when you make many requests to NCBI databases "
@@ -26,6 +29,7 @@ parser.add_argument("email",
 
 args = parser.parse_args()
 file = args.csv
+db = args.db
 Entrez.email = args.email
 
 with open(file, "r") as f:
@@ -39,13 +43,14 @@ csvout = []  # csv-formatted list of annotations
 # Reading GenBank accessions from CSV file
 for line in lines:
     line = line.strip().split(",")
-    if len(line) > 1:  # contition to deal with blank lines
-        idlist.append(line[3])
+    if len(line) > 1:  # condition to deal with blank lines
+        idlist.append(line[1])
 
+dbdict = {"n": "nucleotide","p": "protein"}
 
 # Defining a function to get xml-formatted descriptions of accessions from GenBank Nucleotide
 def get(ids, step):
-    handle = Entrez.efetch(db="nucleotide", id=ids, retmode='xml')
+    handle = Entrez.efetch(db=dbdict[db], id=ids, retmode='xml')
     tmpfile = "".join([file, "_tmp", str(step), ".xml"])
     filelist.append(tmpfile)
     with open(tmpfile, "w") as out:  # Writing a temporary file that will be removed after parsing
@@ -70,17 +75,23 @@ try:
         get(ids_to_fetch, step)
         step += 1
     ids_to_fetch = ",".join(idlist[a:])
-    get(ids_to_fetch, step)
+    if ids_to_fetch != "":
+        get(ids_to_fetch, step)
 
     print("Parsing the result...")
     for tmp in filelist:
         with open(tmp, "r") as f:
             records = Entrez.parse(f)
             for i in records:
-                gblist.append([i['GBSeq_definition'], i['GBSeq_organism'], i['GBSeq_update-date'],
-                              ", ".join(i["GBSeq_references"][0]["GBReference_authors"]) + " " +
-                               i["GBSeq_references"][0]["GBReference_title"],
-                               "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
+                if "GBSeq_references" in i:
+                    gblist.append([i['GBSeq_definition'], i['GBSeq_organism'], i['GBSeq_update-date'],
+                                   ", ".join(i["GBSeq_references"][0]["GBReference_authors"]) + " " +
+                                   i["GBSeq_references"][0]["GBReference_title"],
+                                   "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
+                else:
+                    gblist.append([i['GBSeq_definition'], i['GBSeq_organism'], i['GBSeq_update-date'],
+                                   i['GBSeq_comment'], "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
+
     for tmp in filelist:
         remove(tmp)  # removing temporary file
 
