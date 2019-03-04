@@ -8,9 +8,7 @@ parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter,
                         description='''
 This script is intended for annotation of blast results saved in Hit Table CSV format.
 The output is an annotated CSV file "*_annotated.csv" with the following columns added:
-
 Record name, Species, Date of update, Reference, Full taxonomy
-
 https://github.com/Gurdhhu/bioinf_scripts
                                     ''',
                         epilog='Example usage: ./annotate_blast_hits.py example_input.csv n yourname@mail.com')
@@ -83,14 +81,19 @@ try:
         with open(tmp, "r") as f:
             records = Entrez.parse(f)
             for i in records:
-                if "GBSeq_references" in i:
-                    gblist.append([i['GBSeq_definition'], i['GBSeq_organism'], i['GBSeq_update-date'],
-                                   ", ".join(i["GBSeq_references"][0]["GBReference_authors"]) + " " +
-                                   i["GBSeq_references"][0]["GBReference_title"],
+                if "GBSeq_references" in i and "GBReference_authors" in i["GBSeq_references"][0]:
+                    gblist.append([i['GBSeq_definition'],
+                                   i['GBSeq_organism'],
+                                   i['GBSeq_update-date'],
+                                   ", ".join(i["GBSeq_references"][0]["GBReference_authors"]) +
+                                   " " + i["GBSeq_references"][0]["GBReference_title"],
                                    "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
                 else:
-                    gblist.append([i['GBSeq_definition'], i['GBSeq_organism'], i['GBSeq_update-date'],
-                                   i['GBSeq_comment'], "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
+                    gblist.append([i['GBSeq_definition'],
+                                   i['GBSeq_organism'],
+                                   i['GBSeq_update-date'],
+                                   "\"no reference\"",
+                                   "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
 
     for tmp in filelist:
         remove(tmp)  # removing temporary file
