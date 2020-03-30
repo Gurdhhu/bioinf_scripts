@@ -2,6 +2,7 @@
 from Bio import Entrez
 from os import remove
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from urllib.error import HTTPError
 
 
 parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter,
@@ -44,7 +45,7 @@ for line in lines:
     if len(line) > 1:  # condition to deal with blank lines
         idlist.append(line[1])
 
-dbdict = {"n": "nucleotide","p": "protein"}
+dbdict = {"n": "nuccore","p": "protein"}
 
 # Defining a function to get xml-formatted descriptions of accessions from GenBank Nucleotide
 def get(ids, step):
@@ -68,15 +69,52 @@ step = 1
 try:
     for i in range(len(idlist)//200):
         ids_to_fetch = ",".join(idlist[a:b])
+        get(ids_to_fetch, step)
         a += 200
         b += 200
-        get(ids_to_fetch, step)
         step += 1
     ids_to_fetch = ",".join(idlist[a:])
     if ids_to_fetch != "":
         get(ids_to_fetch, step)
 
-    print("Parsing the result...")
+
+except HTTPError as err:
+    for i in filelist:
+        remove(i)    
+    if err.code == 400:
+        print("HTTP Error 400: Bad Request. Wrong database? Use 'n' for Nuccore and 'p' for Protein")
+        exit()
+    else:
+        raise err
+
+except RuntimeError:
+    print(f"RuntimeError occurred during step {step-1}. Trying one more time...") #list the ID numbers of current step - e.g. 201-400
+
+    try:
+        for i in range(len(idlist[a:])//200):
+            ids_to_fetch = ",".join(idlist[a:b])
+            a += 200
+            b += 200
+            get(ids_to_fetch, step)
+            step += 1
+        ids_to_fetch = ",".join(idlist[a:])
+        if ids_to_fetch != "":
+            get(ids_to_fetch, step)
+
+    except Exception as err:  # removing all temporary files in case of any error
+        for i in filelist:
+            remove(i)
+        raise err
+
+except Exception as err:  # removing all temporary files in case of any error
+    for i in filelist:
+        remove(i)
+    raise err
+
+
+print("Parsing the result...")
+
+try:
     for tmp in filelist:
         with open(tmp, "r") as f:
             records = Entrez.parse(f)
@@ -92,7 +130,7 @@ try:
                     gblist.append([i['GBSeq_definition'],
                                    i['GBSeq_organism'],
                                    i['GBSeq_update-date'],
-                                   "\"no reference\"",
+                                   "no reference",
                                    "\",\"".join(i['GBSeq_taxonomy'].split("; "))])
 
     for tmp in filelist:
@@ -102,6 +140,7 @@ except Exception as err:  # removing all temporary files in case of any error
     for i in filelist:
         remove(i)
     raise err
+
 
 print("Writing annotations into file", "\"" + file[:-4] + "_annotated.csv\"")
 
