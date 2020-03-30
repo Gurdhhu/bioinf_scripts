@@ -8,7 +8,7 @@ It is not convenient to check all the matches manually, especially if you querie
 
 ### Description
 
-This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide** or **Protein** databases.
+This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide (Nuccore)** or **Protein** databases.
 The output is an annotated CSV file "*_annotated.csv" with the following columns added:
 
 * Record name
@@ -37,13 +37,13 @@ After downloading the script you should first make it executable:
 | csv | Pathway to csv-formatted Hit Table file with blastn results. Positional argument |
 | db | For the output of **nucleotide blast** or **tblastn**, use <code>n</code>. For the output of **protein blast** or **blastx**, use <code>p</code>. Positional argument |
 | email | Your e-mail address. It is important when you make many requests to NCBI databases because it helps NCBI to contact you if something goes wrong. Otherwise they can just silently block you. Positional argument |
-| -h, --help | show help message and exit. Optional argument |
+| -h, --help | Show help message and exit. Optional argument |
 
 
 ### Possible problems
 * If any of GenBank accessions correspond to extremely large sequences, such as whole-genome bacterial sequences or complete chromosome sequences with a length of millions bp, it will run EXTREMELY slowly.
 
-* It was tested with hit tables with up to several thousand accessions. It usually works, but if it's a daytime in USA and NCBI servers are overloaded, the script can stop with a runtime error.
+* It was tested with hit tables with up to several thousand accessions. It usually works, but if it's a daytime in USA and NCBI servers are overloaded, the script can stop with a runtime error. In this case, it will try to fetch the data from GenBank once more automatically.
 
 * The script writes some temporary files in the folder containing the hit table and they are normally removed at the end. If the script is terminated manually, some files can stay unremoved.
 
