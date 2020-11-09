@@ -25,11 +25,17 @@ parser.add_argument("email",
                     help="Your e-mail address. It is important when you make many requests to NCBI databases "
                          "because it helps NCBI to contact you if something goes wrong. Otherwise they can "
                          "just silently block you")
+parser.add_argument("-c", "--column",
+                    type=int,
+                    help="Number of the column with GenBank accession numbers, counting from zero. Default value is 1")
 
 args = parser.parse_args()
 file = args.csv
 db = args.db
 Entrez.email = args.email
+col = 1
+if args.column != None:
+    col = args.column
 
 with open(file, "r") as f:
     lines = f.readlines()
@@ -38,12 +44,26 @@ idlist = []  # list of sequence identifiers that will be sent to GenBank Nucleot
 filelist = []  # list of temporary xml files with descriptions of sequences
 gblist = []  # list of annotations
 csvout = []  # csv-formatted list of annotations
+sep = "," # column separator
+
+# Determining column separator
+if len(lines[0].strip().split("\t")) > 1:
+    sep = "\t"
+    print("Column separator: tabulation")
+elif len(lines[0].strip().split(",")) > 1:
+    sep = ","
+    print("Column separator: comma")
+elif len(lines[0].strip().split(";")) > 1:
+    sep = ";"
+    print("Column separator: semicolon")
+else:
+    print("Column separator: comma")
 
 # Reading GenBank accessions from CSV file
 for line in lines:
-    line = line.strip().split(",")
+    line = line.strip().split(sep)
     if len(line) > 1:  # condition to deal with blank lines
-        idlist.append(line[1])
+        idlist.append(line[col])
 
 dbdict = {"n": "nuccore","p": "protein"}
 
@@ -82,7 +102,11 @@ except HTTPError as err:
     for i in filelist:
         remove(i)    
     if err.code == 400:
-        print("HTTP Error 400: Bad Request. Wrong database? Use 'n' for Nuccore and 'p' for Protein")
+        print("HTTP Error 400: Bad Request.\n"
+              f"First query element was: {idlist[0]}\n"
+              "Wrong database? Use 'n' for Nuccore and 'p' for Protein.\n"
+              "Wrong column with GenBank accession numbers? "
+              f"Currently, column # {col} is used. You can change it using --column or -c")
         exit()
     else:
         raise err
@@ -142,12 +166,14 @@ except Exception as err:  # removing all temporary files in case of any error
     raise err
 
 
-print("Writing annotations into file", "\"" + file[:-4] + "_annotated.csv\"")
+print("Writing annotations into file", f"\"{file[:-4]}_annotated.{file[-3:]}\"")
 
 for i in range(len(idlist)):  # formatting annotation into csv
-    csvout.append(lines[i].strip() + ",\"" + "\",\"".join(gblist[i]) + "\"")
+    annotation = f"\"{sep}\"".join(gblist[i])
+    annotated_line = f"{lines[i].strip()}{sep}\"{annotation}\""
+    csvout.append(annotated_line)
 
-with open(file[:-4] + "_annotated.csv", "w") as out:
+with open(f"{file[:-4]}_annotated.{file[-3:]}", "w") as out:
     out.write("\n".join(csvout))
 
 
