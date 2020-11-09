@@ -61,7 +61,7 @@ If anybody will require additional annotation features (e.g., genes), don't hesi
 
 ## 2. Additional scripts for VSEARCH pipeline
 Several scripts are stored here as a supplementary material for my [publication](https://doi.org/10.1016/j.funeco.2018.11.006)
-This is not the best organizational decision from me, but it's too late to change.
+This is not the best organizational decision from me, but it's too late to change it.
 ### Scripts:
 add_silva_taxonomy.py
 filter_fasta.py
