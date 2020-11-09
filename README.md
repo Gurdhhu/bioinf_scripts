@@ -10,7 +10,7 @@ It is not convenient to check all the matches manually, especially if you querie
 
 This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide (Nuccore)** or **Protein** databases.
 
-**Input:** table in CSV or TSV format (separators: comma, tabulation or semicolon), where GenBank accession numbers are by default in the 2nd column (1 if counted from zero). The column can be changed via optional argument --column, -c (column number counting from zero).
+**Input:** table in CSV or TSV format (separators: comma, tabulation or semicolon), where GenBank accession numbers are by default in the 2nd column (1 if counted from zero). The column can be changed via optional argument --column, -c (column number counting from zero). There should be no headers or commented lines - they will cause errors.
 
 The **output** is a file **"*_annotated.csv"** containing the original table with the following columns added:
 
