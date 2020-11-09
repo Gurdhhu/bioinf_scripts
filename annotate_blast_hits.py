@@ -45,10 +45,12 @@ filelist = []  # list of temporary xml files with descriptions of sequences
 gblist = []  # list of annotations
 csvout = []  # csv-formatted list of annotations
 sep = "," # column separator
+ext = "csv"
 
 # Determining column separator
 if len(lines[0].strip().split("\t")) > 1:
     sep = "\t"
+    ext = "tsv"
     print("Column separator: tabulation")
 elif len(lines[0].strip().split(",")) > 1:
     sep = ","
@@ -166,14 +168,14 @@ except Exception as err:  # removing all temporary files in case of any error
     raise err
 
 
-print("Writing annotations into file", f"\"{file[:-4]}_annotated.{file[-3:]}\"")
+print("Writing annotations into file", f"\"{file}_annotated.{ext}\"")
 
 for i in range(len(idlist)):  # formatting annotation into csv
     annotation = f"\"{sep}\"".join(gblist[i])
     annotated_line = f"{lines[i].strip()}{sep}\"{annotation}\""
     csvout.append(annotated_line)
 
-with open(f"{file[:-4]}_annotated.{file[-3:]}", "w") as out:
+with open(f"{file}_annotated.{ext}", "w") as out:
     out.write("\n".join(csvout))
 
 
