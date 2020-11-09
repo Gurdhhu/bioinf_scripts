@@ -8,8 +8,10 @@ It is not convenient to check all the matches manually, especially if you querie
 
 ### Description
 
-This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format where GenBank accession numbers are in the 4th column. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide (Nuccore)** or **Protein** databases.
-The output is an annotated CSV file "*_annotated.csv" with the following columns added:
+This script is intended for taxonomic annotation of **blast** results (blastn, tblastn, blastp or blastx) saved in **Hit Table CSV** format. It uses **efetch** function from **Bio.Entrez** package to get information about accessions from **GenBank Nucleotide (Nuccore)** or **Protein** databases.
+
+**Input:** table in CSV or TSV format (separators: comma, tabulation or semicolon), where GenBank accession numbers are by default in the 2nd column (1 if counted from zero). The column can be changed via optional argument --column, -c (column number counting from zero).
+The **output** is a file **"*_annotated.csv"** containing the original table with the following columns added:
 
 * Record name
 * Species name
@@ -28,15 +30,16 @@ After downloading the script you should first make it executable:
 
 <code>chmod +x annotate_blast_hits.py</code>
 
-**Usage:**  <code>annotate_blast_hits.py [-h] csv db email</code>
+**Usage:**  <code>annotate_blast_hits.py [-h] [-c] csv db email</code>
 
-**Example usage:** <code>./annotate_blast_hits.py example_input.csv n yourname@mail.com</code>
+**Example usage:** <code>./annotate_blast_hits.py example_input.csv n yourname@mail.com -c 1</code>
 
 | arguments | description |
 | --- | --- |
 | csv | Pathway to csv-formatted Hit Table file with blastn results. Positional argument |
 | db | For the output of **nucleotide blast** or **tblastn**, use <code>n</code>. For the output of **protein blast** or **blastx**, use <code>p</code>. Positional argument |
 | email | Your e-mail address. It is important when you make many requests to NCBI databases because it helps NCBI to contact you if something goes wrong. Otherwise they can just silently block you. Positional argument |
+| -c, --column | Specify the position of the column with GenBank accession numbers, counting from zero. Default value is 1. Optional argument |
 | -h, --help | Show help message and exit. Optional argument |
 
 
@@ -51,3 +54,15 @@ After downloading the script you should first make it executable:
 For any questions and suggestions: ledum_laconicum(at)mail(dot)ru
 
 If anybody will require additional annotation features (e.g., genes), don't hesitate to contact me.
+
+
+
+
+## 2. Additional scripts for VSEARCH pipeline
+Several scripts are stored here as a supplementary material for my [publication](https://doi.org/10.1016/j.funeco.2018.11.006)
+This is not the best organizational decision from me, but it's too late to change.
+### Scripts:
+add_silva_taxonomy.py
+filter_fasta.py
+filter_otutab_and_fasta.py
+filter_tsv_by_other_tsv.py
