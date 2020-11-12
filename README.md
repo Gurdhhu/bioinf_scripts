@@ -4,7 +4,7 @@ Here I will upload some python3 scripts for dealing with nucleotide sequences th
 ### Motivation
 
 When you download the results of blast search from NCBI BLAST webpage, the table of blast hits does not contain any information about the matching sequences except their accession number.
-It is not convenient to check all the matches manually, especially if you queried hundreds of sequences in a batch.
+It is not convenient to check all the matches manually, especially if you queried thousands of sequences in a batch.
 
 ### Description
 
@@ -25,7 +25,7 @@ This script **"annotate_blast_hits.py"** requires **python3** and package **Biop
 
 I did not try to run it on Windows, but probably it should also work.
 
-You can also download an **executable for Linux** that does not require any dependencies. The script with all dependencies was bundled into one file with [PyInstaller](http://www.pyinstaller.org/), so you can just save **"annotate_blast_hits"** and run it.
+You can also download a **standalone executable for Linux** that does not require any dependencies. The script with all dependencies was bundled into one file with [PyInstaller](http://www.pyinstaller.org/), so you can just save **"annotate_blast_hits"** and run it. **Upd:** Standalone version requires **GNU libc 2.31 or newer**.
 
 After downloading the script you should first make it executable:
 
