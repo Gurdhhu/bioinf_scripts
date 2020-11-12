@@ -25,7 +25,7 @@ This script **"annotate_blast_hits.py"** requires **python3** and package **Biop
 
 I did not try to run it on Windows, but probably it should also work.
 
-You can also download a **standalone executable for Linux** that does not require any dependencies. The script with all dependencies was bundled into one file with [PyInstaller](http://www.pyinstaller.org/), so you can just save **"annotate_blast_hits"** and run it. **Upd:** Standalone version requires **GNU libc 2.31 or newer**.
+You can also download a **standalone executable for Linux** that does not require any dependencies (**Upd:** Standalone version requires **GNU libc 2.31 or newer**). The script with all dependencies was bundled into one file with [PyInstaller](http://www.pyinstaller.org/), so you can just save **"annotate_blast_hits"** and run it.
 
 After downloading the script you should first make it executable:
 
